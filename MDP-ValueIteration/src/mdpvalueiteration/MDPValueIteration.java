@@ -52,8 +52,9 @@ public class MDPValueIteration extends PApplet {
        
         // The algorithm has 'converged' when the values stop changing
         Boolean hasConverged = false;
-        int i = 0;
-        while( !hasConverged && i < 2000 ) {
+        float t = 0;
+        float gamma = 0.9f	;
+        while( !hasConverged ) {
         	
         	hasConverged = true; // Set to false on first one that doesn't match
         	
@@ -62,13 +63,14 @@ public class MDPValueIteration extends PApplet {
 		    	if( square.isAbsorbing ) continue;
 		    			    	
 		    	float oldValue = square.value;
-		    	calculateMaxValueForSquare( square, 0.1f );
+		    	calculateMaxValueForSquare( square, 1, -3 );
 
+		    	
 		    	// If we considered it true before and this square is different - mark as false
 		    	if(hasConverged && oldValue != square.value)
 		    		hasConverged = false;
 			}
-		    ++i;
+		    t++;
 		}        
         
 		
@@ -115,7 +117,7 @@ public class MDPValueIteration extends PApplet {
 	  popMatrix();
 	}
 	
-	public void calculateMaxValueForSquare( GridSquare aSquare, float r ) {
+	public void calculateMaxValueForSquare( GridSquare aSquare, float gamma, float r ) {
 		
 		PVector[] directions = {NORTH, EAST, SOUTH, WEST};
 		
@@ -128,7 +130,7 @@ public class MDPValueIteration extends PApplet {
 			float squareValueB = calculateValueForMove( aSquare, rotateVector(direction, -1.57079633f ), 0.1f);
 			float squareValueC = calculateValueForMove( aSquare, rotateVector(direction, 1.57079633f ), 0.1f);
 			
-			float totalValue = squareValueA + squareValueB + squareValueC + r;
+			float totalValue = gamma * (squareValueA + squareValueB + squareValueC + r);
 			
 			if(totalValue > highestValue) {
 				highestValue = totalValue;
