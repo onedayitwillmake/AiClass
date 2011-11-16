@@ -50,14 +50,20 @@ public class MDPValueIteration extends PApplet {
         blockedSquare._color = 0;
         blockedSquare.setPermutable( false );
        
-        // The algorithm has 'converged' when the values stop changing
+              
+        
+		
+        delay(1000);
+        size( board[0].length * squareSize, board.length * squareSize );
+	}
+
+	@Override
+	public void mouseClicked() {
+		super.mouseClicked();
+		
+		// The algorithm has 'converged' when the values stop changing
         Boolean hasConverged = false;
-        float t = 0;
-        float gamma = 0.9f	;
-        while( !hasConverged ) {
-        	
-        	hasConverged = true; // Set to false on first one that doesn't match
-        	
+       
 		    for (GridSquare square : _gridModel.get_gridSquareList()) {
 		    	if( !square.isPermutable() ) continue;
 		    	if( square.isAbsorbing ) continue;
@@ -69,13 +75,7 @@ public class MDPValueIteration extends PApplet {
 		    	// If we considered it true before and this square is different - mark as false
 		    	if(hasConverged && oldValue != square.value)
 		    		hasConverged = false;
-			}
-		    t++;
-		}        
-        
-		
-        delay(1000);
-        size( board[0].length * squareSize, board.length * squareSize );
+			}        
 	}
 
 	public void draw() {
