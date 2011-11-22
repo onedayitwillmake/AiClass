@@ -26,7 +26,7 @@ public class ValueTableOneDimension {
 		Double W1_over_M = calculateW1() / M;
 		Double SumXi = getSum(Xi);
 		
-		W0 = (QuaterM*SumYi) - (W1_over_M*SumYi);
+		W0 = (QuaterM*SumYi) - (W1_over_M*SumXi);
 		return W0;
 	}
 	
@@ -115,7 +115,10 @@ public class ValueTableOneDimension {
 	}
 
 
+	// Add pair for any number type
 	public void addPair( int x, int y ) { Xi.add( new Double(x) ); Yi.add( new Double(y) ); }
 	public void addPair( Float x, Float y ) { Xi.add( new Double(x) ); Yi.add( new Double(y) ); }
 	public void addPair( Double x, Double y ) { Xi.add( x ); Yi.add( y ); }
+	public void addPair( int x, Double y ) { Xi.add( new Double(x) ); Yi.add( new Double(y) ); }
+	public void addPair( Double x, int y ) { Xi.add( new Double(x) ); Yi.add( new Double(y) ); }
 }

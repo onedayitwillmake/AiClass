@@ -24,13 +24,14 @@ public class MDPValueIteration extends PApplet {
 		
 		smooth();
 		int squareSize = 100;
-		_gridModel = new GridModel(4, 3, squareSize, this);
 		
 		  int[][] board = {
+					  {0, 0, 0, 100},
 					  {0, 0, 0, 0},
-					  {-100, 0, 0, 100},
 					};
 	        
+
+			_gridModel = new GridModel( board[0].length, board.length, squareSize, this);
 
         for(int x = 0; x < board.length; ++x){
         	for(int y = 0; y < board[x].length; ++y) {
@@ -44,10 +45,11 @@ public class MDPValueIteration extends PApplet {
         	}
         }
         
+
         
-//        GridSquare blockedSquare = _gridModel.getSquareAtGridPosition(1, 1);
-//        blockedSquare._color = 0;
-//        blockedSquare.setPermutable( false );
+        GridSquare blockedSquare = _gridModel.getSquareAtGridPosition(2, 0);
+        blockedSquare._color = 100;
+        blockedSquare.setPermutable( false );
        
               
         
@@ -68,7 +70,7 @@ public class MDPValueIteration extends PApplet {
 		    	if( square.isAbsorbing ) continue;
 		    			    	
 		    	float oldValue = square.value;
-		    	calculateMaxValueForSquare( square, 1, -4 );
+		    	calculateMaxValueForSquare( square, 1, -5);
 
 		    	
 		    	// If we considered it true before and this square is different - mark as false
@@ -118,18 +120,18 @@ public class MDPValueIteration extends PApplet {
 	
 	public void calculateMaxValueForSquare( GridSquare aSquare, float gamma, float r ) {
 		
-		PVector[] directions = {NORTH, EAST, SOUTH, WEST};
+		PVector[] directions = {EAST, SOUTH, WEST, NORTH};
 		
 		float highestValue = java.lang.Float.NEGATIVE_INFINITY;
 		PVector bestDirection = null;
 		for (int i = 0; i < directions.length; i++) {
 			PVector direction = directions[i];
 		
-			float squareValueA = calculateValueForMove( aSquare, direction, 0.8f);
-			float squareValueB = calculateValueForMove( aSquare, rotateVector(direction, 1.57079633f * 2 ), 0.2f);
+			float squareValueA = calculateValueForMove( aSquare, direction, 1.0f);
+//			float squareValueB = calculateValueForMove( aSquare, rotateVector(direction, 1.57079633f * 2 ), 0.2f);
 //			float squareValueC = calculateValueForMove( aSquare, rotateVector(direction, 1.57079633f ), 0.1f);
 			
-			float totalValue = gamma * (squareValueA + squareValueB + r);
+			float totalValue = gamma * (squareValueA + r);
 			
 			if(totalValue > highestValue) {
 				highestValue = totalValue;
