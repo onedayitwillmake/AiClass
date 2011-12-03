@@ -124,14 +124,16 @@ public class MDPValueIteration extends PApplet {
 		PVector bestDirection = null;
 		for (int i = 0; i < directions.length; i++) {
 			PVector direction = directions[i];
-		
-			float squareValueA = calculateValueForMove( aSquare, direction, 0.8f);
-			float squareValueB = calculateValueForMove( aSquare, rotateVector(direction, 1.57079633f * 2 ), 0.2f);
-//			float squareValueC = calculateValueForMove( aSquare, rotateVector(direction, 1.57079633f ), 0.1f);
 			
-			float totalValue = gamma * (squareValueA + squareValueB + r);
+			float squareValue = 0.0f;
+			squareValue += calculateValueForMove( aSquare, direction, 0.8f );
+			squareValue += calculateValueForMove( aSquare, rotateVector(direction, 1.57079633f * 2 ), 0.2f );
+			//squareValue += calculateValueForMove( aSquare, rotateVector(direction, 1.57079633f ), 0.1f );
+			
+			float totalValue = gamma * (squareValue + r);
 			
 			if(totalValue > highestValue) {
+				
 				highestValue = totalValue;
 				bestDirection = direction;
 				
@@ -165,6 +167,7 @@ public class MDPValueIteration extends PApplet {
 		GridSquare square = _gridModel.getSquareAtGridPosition((int)aSquare._gridPosition.x + goalX, (int)aSquare._gridPosition.y + goalY);
 		
 		if( square == null || !square.isPermutable() ) return aSquare.value * probability;
+		
 		return square.value * probability;
 	}
 }

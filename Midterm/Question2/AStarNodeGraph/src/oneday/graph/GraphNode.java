@@ -8,6 +8,7 @@ import oneday.NodeGraph;
 
 import processing.core.PApplet;
 import processing.core.PVector;
+import utils.StaticDrawingHelpers;
 
 public class GraphNode {
 	private NodeGraph appRef;
@@ -18,6 +19,8 @@ public class GraphNode {
 	public PVector _position;
 	
 	private LinkedList<GraphArc> _arcs;
+	private LinkedList<GraphNode> _leads; // Opposite of arcs
+	
 	public float _heuristic; // This will be a function later but for now its just a value
 	
 	public int debugExpandedAt = 0;
@@ -39,13 +42,25 @@ public class GraphNode {
 	 */
 	public void addArc(GraphNode aTargetNode, float aCost) {
 		_arcs.add( new GraphArc(aTargetNode, aCost) );
+		aTargetNode.addLead( this );
 	}
 	
 	public boolean removeArc( GraphNode aTargetNode ) {
 		GraphArc arc = getArc( aTargetNode );
 		if( arc == null ) return false; // Not found
 		
+		aTargetNode.removeLead( this );
 		return _arcs.remove( arc );
+	}
+	
+	public void addLead( GraphNode aParentNode ) {
+		if(_leads.contains( aParentNode ) ) return;
+		_leads.add( aParentNode );
+	}
+	
+	public void removeLead( GraphNode aParentNode ) {
+		if(_leads.contains( aParentNode ) ) return;
+		_leads.remove( aParentNode );
 	}
 
 
@@ -65,9 +80,20 @@ public class GraphNode {
 
 
 	public void draw() {
-		appRef.stroke( 255 );
+		appRef.stroke( 10 );
+		
+		PVector a = _position.get();
+		a .normalize();
+		
 		for( GraphArc arc : _arcs ) {
 			appRef.line(_position.x, _position.y, arc._node._position.x, arc._node._position.y);
+			
+			PVector b = arc._node._position.get();
+			b.normalize();
+			
+			PVector v = PVector.sub(a, b);
+			
+			StaticDrawingHelpers.drawVector(v, _position.x, _position.y, 1);
 		}
 		
 		appRef.fill( color );
@@ -81,13 +107,12 @@ public class GraphNode {
 		
 		appRef.fill(255, 0, 255);
 		appRef.text(this.debugExpandedAt, _position.x, _position.y + _size*0.25f+5 );
-		
-		
 	}
 	
 	
 	///// ACCESSORS
 	public LinkedList<GraphArc> getArcs() { return _arcs; };
+	public LinkedList<GraphNode> getLeads() { return _leads; };
 	public PVector getPosition() { return _position; };
 	public float getHeuristic() { return _heuristic; };
 	
